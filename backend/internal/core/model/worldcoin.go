@@ -3,17 +3,13 @@ package model
 import "time"
 
 type WorldCoinHandlerRequest struct {
+	AppID             string `json:"appID"`
 	NullifierHash     string
 	MerkleRoot        string
 	VerificationLevel string
 	Action            string
 	SignalHash        string
 }
-
-type WorldCoinHandlerRequestVerfiy struct {
-	AppID string `json:"appID"`
-}
-
 type WorldCoinHandlerResponse struct {
 	VerifyProof   bool
 	Action        string
