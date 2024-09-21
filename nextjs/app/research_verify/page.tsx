@@ -2,6 +2,14 @@
 "use client";
 
 import React from "react";
+import QueryResearchAttestation from "~~/components/QueryResearchAttestation";
+import CreateIdAttestation from "~~/components/createResearchAttestation";
+
+// app/[your-page]/page.tsx
+
+// app/[your-page]/page.tsx
+
+// app/[your-page]/page.tsx
 
 // app/[your-page]/page.tsx
 
@@ -16,22 +24,22 @@ import React from "react";
 
 const research_verify = () => {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-500 to-indigo-600 p-4">
-      <h1 className="text-4xl font-bold text-white">Welcome to Your Page</h1>
-      <p className="mt-4 text-lg text-gray-100 text-center">
-        This is a sample page using the Next.js App Router structure.
-      </p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-indigo-600 p-4">
+      <h1 className="text-4xl font-bold text-white mb-8">Attestation Dashboard</h1>
+      <div className="flex flex-col lg:flex-row gap-8 w-full max-w-6xl">
+        {/* Create Research Attestation Section */}
+        <div className="flex-1 bg-gradient-to-br from-yellow-400 to-orange-500 shadow-lg rounded-lg p-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create Research Attestation</h2>
+          <CreateIdAttestation />
+        </div>
 
-      {/* Add your page-specific content or components here */}
-      {/* <YourComponent /> */}
-
-      <button
-        className="mt-6 px-4 py-2 bg-white text-purple-700 rounded shadow hover:bg-purple-200 transition"
-        onClick={() => alert("Button clicked!")}
-      >
-        Click Me
-      </button>
-    </main>
+        {/* Query Research Attestation Section */}
+        <div className="flex-1 bg-gradient-to-br from-teal-400 to-green-500 shadow-lg rounded-lg p-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Query Research Attestation</h2>
+          <QueryResearchAttestation />
+        </div>
+      </div>
+    </div>
   );
 };
 
