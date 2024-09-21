@@ -19,7 +19,7 @@ const WorldId = () => {
   const handleVerify = async (response: VerificationResponse) => {
     // Send the proof to your backend for verification
     try {
-      const res = await fetch("/api/verify", {
+      const res = await fetch("http://0.0.0.0:1323/verify-proof", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const WorldId = () => {
 
   return (
     <>
-      <IDKitWidget
+      {/* <IDKitWidget
         app_id="app_staging_c7268efb0452517eec8fe9c0289c234f"
         action="testing-action"
         onSuccess={onSuccess}
@@ -70,6 +70,16 @@ const WorldId = () => {
             </span>
           </button>
         )}
+      </IDKitWidget> */}
+      <IDKitWidget
+        app_id="app_staging_c7268efb0452517eec8fe9c0289c234f"
+        action="test-prod"
+        false
+        verification_level={VerificationLevel.Device}
+        handleVerify={handleVerify}
+        onSuccess={onSuccess}
+      >
+        {({ open }) => <button onClick={open}>Verify with World ID</button>}
       </IDKitWidget>
     </>
   );

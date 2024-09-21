@@ -259,54 +259,128 @@ const SignAttestation = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="researcherID">Researcher ID:</label>
-          <input type="text" id="researcherID" value={researcherID} onChange={e => setResearcherID(e.target.value)} />
+    <div className="bg-white bg-opacity-10 p-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex flex-col">
+          <label htmlFor="researcherID" className="text-white font-semibold">
+            Researcher ID:
+          </label>
+          <input
+            type="text"
+            id="researcherID"
+            value={researcherID}
+            onChange={e => setResearcherID(e.target.value)}
+            className="bg-gradient-to-r from-yellow-300 to-orange-400 text-gray-900 placeholder-gray-700 rounded p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Enter Researcher ID"
+          />
         </div>
-        <div>
-          <label htmlFor="fullName">Full Name:</label>
-          <input type="text" id="fullName" value={fullName} onChange={e => setFullName(e.target.value)} />
+        <div className="flex flex-col">
+          <label htmlFor="fullName" className="text-white font-semibold">
+            Full Name:
+          </label>
+          <input
+            type="text"
+            id="fullName"
+            value={fullName}
+            onChange={e => setFullName(e.target.value)}
+            className="bg-gradient-to-r from-teal-300 to-green-400 text-gray-900 placeholder-gray-700 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Enter Full Name"
+          />
         </div>
-        <div>
-          <label htmlFor="affiliation">Affiliation:</label>
-          <input type="text" id="affiliation" value={affiliation} onChange={e => setAffiliation(e.target.value)} />
+        <div className="flex flex-col">
+          <label htmlFor="affiliation" className="text-white font-semibold">
+            Affiliation:
+          </label>
+          <input
+            type="text"
+            id="affiliation"
+            value={affiliation}
+            onChange={e => setAffiliation(e.target.value)}
+            className="bg-gradient-to-r from-blue-300 to-indigo-400 text-gray-900 placeholder-gray-700 rounded p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter Affiliation"
+          />
         </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} />
+        <div className="flex flex-col">
+          <label htmlFor="email" className="text-white font-semibold">
+            Email:
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="bg-gradient-to-r from-pink-300 to-red-400 text-gray-900 placeholder-gray-700 rounded p-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder="Enter Email"
+          />
         </div>
-        <div>
-          <label htmlFor="researchAreas">Research Areas (comma-separated):</label>
+        <div className="flex flex-col">
+          <label htmlFor="researchAreas" className="text-white font-semibold">
+            Research Areas (comma-separated):
+          </label>
           <input
             type="text"
             id="researchAreas"
             value={researchAreas.join(",")}
             onChange={e => setResearchAreas(e.target.value.split(",").map(s => s.trim()))}
+            className="bg-gradient-to-r from-yellow-300 to-orange-400 text-gray-900 placeholder-gray-700 rounded p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Enter Research Areas"
           />
         </div>
-        <div>
-          <label htmlFor="publicKey">Public Key:</label>
-          <input type="text" id="publicKey" value={publicKey} onChange={e => setPublicKey(e.target.value)} />
+        <div className="flex flex-col">
+          <label htmlFor="publicKey" className="text-white font-semibold">
+            Public Key:
+          </label>
+          <input
+            type="text"
+            id="publicKey"
+            value={publicKey}
+            onChange={e => setPublicKey(e.target.value)}
+            className="bg-gradient-to-r from-teal-300 to-green-400 text-gray-900 placeholder-gray-700 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Enter Public Key"
+          />
         </div>
-        <div>
-          <label htmlFor="worldIDProof">World ID Proof:</label>
-          <input type="text" id="worldIDProof" value={worldIDProof} onChange={e => setWorldIDProof(e.target.value)} />
+        <div className="flex flex-col">
+          <label htmlFor="worldIDProof" className="text-white font-semibold">
+            World ID Proof:
+          </label>
+          <input
+            type="text"
+            id="worldIDProof"
+            value={worldIDProof}
+            onChange={e => setWorldIDProof(e.target.value)}
+            className="bg-gradient-to-r from-blue-300 to-indigo-400 text-gray-900 placeholder-gray-700 rounded p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter World ID Proof"
+          />
         </div>
-        <button type="submit">Submit</button>
+        <button
+          type="submit"
+          className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
+        >
+          Submit
+        </button>
       </form>
-      <div>
-        <button onClick={handleQueryAttestations}>Query Attestations</button>
+
+      <div className="mt-6">
+        <button
+          onClick={handleQueryAttestations}
+          className="bg-gradient-to-r from-teal-500 to-blue-500 text-white font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Query Attestations
+        </button>
       </div>
-      <div>
-        <button onClick={handleFindAttestation}>Find Attestation</button>
+      <div className="mt-4">
+        <button
+          onClick={handleFindAttestation}
+          className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        >
+          Find Attestation
+        </button>
       </div>
 
-      {queryResult && !queryResult.success && <p>{queryResult.message}</p>}
+      {queryResult && !queryResult.success && <p className="text-white mt-4">{queryResult.message}</p>}
 
       {showAttestations && (
-        <div className="attestations-list">
+        <div className="attestations-list mt-4">
           {attestations.map((attestation, index) => (
             <AttestationCard key={index} attestation={attestation} />
           ))}
