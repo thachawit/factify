@@ -17,7 +17,7 @@ const WorldId = ({ onVerifySuccess }) => {
   // Callback when the proof is received
   const handleVerify = async (response: VerificationResponse) => {
     try {
-      const res = await fetch("http://0.0.0.0:1323/verify-proof", {
+      const res = await fetch("https://627c-223-255-254-102.ngrok-free.app/verify-proof", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
