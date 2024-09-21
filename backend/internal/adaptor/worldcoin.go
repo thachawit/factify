@@ -21,13 +21,13 @@ func NewWorldCoinAdaptor(client resty.Client) outbound.WorldCoinAdaptor {
 }
 
 func (a *WorldCoinAdaptor) VerifyProof(ctx context.Context, proofModel model.WorldCoinAdaptorRequest) (*model.WorldCoinAdaptorResponse, error) {
-	url := fmt.Sprintf("http://your-api-url/api/v2//%s", proofModel.AppID)
+	url := fmt.Sprintf("http://your-api-url/api/v2//%s", "app_staging_c7268efb0452517eec8fe9c0289c234f")
 
 	payload := &model.WorldCoinAdaptorRequest{
 		NullifierHash:     proofModel.NullifierHash,
 		MerkleRoot:        proofModel.MerkleRoot,
 		VerificationLevel: proofModel.VerificationLevel,
-		Action:            proofModel.Action,
+		Action:            "test-prod",
 		SignalHash:        proofModel.SignalHash,
 	}
 	result := model.WorldCoinAdaptorResponse{}

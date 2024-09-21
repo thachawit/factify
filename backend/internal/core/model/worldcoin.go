@@ -3,7 +3,6 @@ package model
 import "time"
 
 type WorldCoinHandlerRequest struct {
-	AppID             string `json:"appID"`
 	NullifierHash     string
 	MerkleRoot        string
 	VerificationLevel string
