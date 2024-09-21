@@ -68,6 +68,11 @@ export function Header() {
                 Factify
               </span>
             </Link>
+            <Link href="/research_verify" className="flex items-center space-x-2 ml-4">
+              <span className="text-l bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                Research
+              </span>
+            </Link>
           </div>
 
           <div className="flex items-center space-x-4">

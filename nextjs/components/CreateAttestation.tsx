@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WorldId from "./WorldId";
 import { EvmChains, SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 
-// Import WorldId component
-
+// Replace with your private key
 const privateKey = "0xc44f89924070f06206a4c1465e87ea1551111be5fd8d6405a1978bb519356520";
 const account = privateKeyToAccount(privateKey);
 
@@ -60,6 +59,16 @@ const CreateAttestation = () => {
   const [publicKey, setPublicKey] = useState(account.address);
   const [worldIDProof, setWorldIDProof] = useState("");
 
+  // Automatically generate a unique Researcher ID when the component mounts
+  useEffect(() => {
+    const generateResearcherID = () => {
+      const uniqueID = `RES-${Date.now()}`; // Creates a unique ID based on the current timestamp
+      setResearcherID(uniqueID);
+    };
+
+    generateResearcherID();
+  }, []);
+
   // Callback to receive the verification result from WorldId component
   const handleVerificationSuccess = (result: { proof: string }) => {
     setWorldIDProof(result.proof); // Update worldIDProof with verification result proof
@@ -92,9 +101,8 @@ const CreateAttestation = () => {
             type="text"
             id="researcherID"
             value={researcherID}
-            onChange={e => setResearcherID(e.target.value)}
+            readOnly // Make the field read-only since it's auto-generated
             className="input input-bordered input-primary w-full bg-base-100 text-base-content"
-            placeholder="Enter Researcher ID"
           />
         </div>
         <div className="form-control">

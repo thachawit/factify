@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import WorldId from "./WorldId";
+// Import World ID component for authentication
 import { EvmChains, SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 
@@ -52,6 +54,7 @@ const CreateResearchAtt = () => {
   const [signatureID, setSignatureID] = useState(account.address);
   const [datetime, setDatetime] = useState(new Date().toISOString());
   const [base64ResearchUpload, setBase64ResearchUpload] = useState("");
+  const [isVerified, setIsVerified] = useState(false); // State to track if World ID authentication is successful
 
   // Automatically generate a research ID and set the current time
   useEffect(() => {
@@ -98,8 +101,13 @@ const CreateResearchAtt = () => {
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isVerified) {
+      alert("Please authenticate with World ID before submitting.");
+      return;
+    }
     await createResearchAttestation({
       researchID,
       biasScoring,
@@ -109,72 +117,86 @@ const CreateResearchAtt = () => {
     });
   };
 
+  // Callback to handle successful verification from World ID
+  const handleVerificationSuccess = () => {
+    setIsVerified(true); // Set verification state to true when successful
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-base-200 rounded-lg shadow-md">
-      <div className="form-control">
-        <label htmlFor="researchID" className="label">
-          <span className="label-text text-base-content">Research ID:</span>
-        </label>
-        <input
-          type="text"
-          id="researchID"
-          value={researchID}
-          readOnly // Make the field read-only since it's auto-generated
-          className="input input-bordered input-primary w-full bg-base-100 text-base-content"
-        />
-      </div>
-      <div className="form-control">
-        <label htmlFor="biasScoring" className="label">
-          <span className="label-text text-base-content">Bias Scoring:</span>
-        </label>
-        <input
-          type="text"
-          id="biasScoring"
-          value={biasScoring}
-          onChange={e => setBiasScoring(e.target.value)}
-          className="input input-bordered input-primary w-full bg-base-100 text-base-content"
-          placeholder="Enter Bias Scoring"
-        />
-      </div>
-      <div className="form-control">
-        <label htmlFor="signatureID" className="label">
-          <span className="label-text text-base-content">Signature ID:</span>
-        </label>
-        <input
-          type="text"
-          id="signatureID"
-          value={signatureID}
-          onChange={e => setSignatureID(e.target.value)}
-          className="input input-bordered input-primary w-full bg-base-100 text-base-content"
-          placeholder="Enter Signature ID"
-        />
-      </div>
-      <div className="form-control">
-        <label htmlFor="datetime" className="label">
-          <span className="label-text text-base-content">Date and Time:</span>
-        </label>
-        <input
-          type="datetime-local"
-          id="datetime"
-          value={datetime.slice(0, 16)} // Format to "YYYY-MM-DDTHH:MM"
-          readOnly // Make the field read-only since it's auto-updated
-          className="input input-bordered input-primary w-full bg-base-100 text-base-content"
-        />
-      </div>
-      <div className="form-control">
-        <label htmlFor="base64ResearchUpload" className="label">
-          <span className="label-text text-base-content">Research File (Base64):</span>
-        </label>
-        <input
-          type="file"
-          onChange={handleFileUpload}
-          className="input input-bordered input-primary w-full bg-base-100 text-base-content"
-        />
-      </div>
-      <button type="submit" className="btn btn-primary w-full mt-4">
-        Submit
-      </button>
-    </form>
+    <div className="space-y-6">
+      {/* World ID Component for Verification */}
+      <WorldId onVerifySuccess={handleVerificationSuccess} />
+
+      <form onSubmit={handleSubmit} className="space-y-4 p-4 bg-base-200 rounded-lg shadow-md">
+        <div className="form-control">
+          <label htmlFor="researchID" className="label">
+            <span className="label-text text-base-content">Research ID:</span>
+          </label>
+          <input
+            type="text"
+            id="researchID"
+            value={researchID}
+            readOnly // Make the field read-only since it's auto-generated
+            className="input input-bordered input-primary w-full bg-base-100 text-base-content"
+          />
+        </div>
+        <div className="form-control">
+          <label htmlFor="biasScoring" className="label">
+            <span className="label-text text-base-content">Bias Scoring:</span>
+          </label>
+          <input
+            type="text"
+            id="biasScoring"
+            value={biasScoring}
+            onChange={e => setBiasScoring(e.target.value)}
+            className="input input-bordered input-primary w-full bg-base-100 text-base-content"
+            placeholder="Enter Bias Scoring"
+          />
+        </div>
+        <div className="form-control">
+          <label htmlFor="signatureID" className="label">
+            <span className="label-text text-base-content">Signature ID:</span>
+          </label>
+          <input
+            type="text"
+            id="signatureID"
+            value={signatureID}
+            onChange={e => setSignatureID(e.target.value)}
+            className="input input-bordered input-primary w-full bg-base-100 text-base-content"
+            placeholder="Enter Signature ID"
+          />
+        </div>
+        <div className="form-control">
+          <label htmlFor="datetime" className="label">
+            <span className="label-text text-base-content">Date and Time:</span>
+          </label>
+          <input
+            type="datetime-local"
+            id="datetime"
+            value={datetime.slice(0, 16)} // Format to "YYYY-MM-DDTHH:MM"
+            readOnly // Make the field read-only since it's auto-updated
+            className="input input-bordered input-primary w-full bg-base-100 text-base-content"
+          />
+        </div>
+        <div className="form-control">
+          <label htmlFor="base64ResearchUpload" className="label">
+            <span className="label-text text-base-content">Research File (Base64):</span>
+          </label>
+          <input
+            type="file"
+            onChange={handleFileUpload}
+            className="input input-bordered input-primary w-full bg-base-100 text-base-content"
+          />
+        </div>
+        <button
+          type="submit"
+          className={`btn btn-primary w-full mt-4 ${isVerified ? "" : "opacity-50 cursor-not-allowed"}`}
+          disabled={!isVerified}
+        >
+          {isVerified ? "Submit Attestation" : "Authenticate to Enable Submission"}
+        </button>
+      </form>
+    </div>
   );
 };
 
