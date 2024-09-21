@@ -125,6 +125,40 @@ components
 └── sign-schema.tsx
 ```
 
+**backend**
+
+```tree
+../backend/
+├── config
+│   └── config.yaml
+├── go.mod
+├── go.sum
+├── infra
+│   ├── api
+│   │   └── http.go
+│   └── config.go
+├── internal
+│   ├── adaptor
+│   │   ├── model
+│   │   │   └── worldcoin.go
+│   │   └── worldcoin.go
+│   ├── core
+│   │   ├── model
+│   │   │   └── worldcoin.go
+│   │   ├── port
+│   │   │   ├── inbound
+│   │   │   │   └── worldcoin.go
+│   │   │   └── outbound
+│   │   │       └── worldcoin.go
+│   │   └── service
+│   │       └── worldcoin.go
+│   └── handler
+│       ├── health.go
+│       └── worldcoin
+│           └── verify.go
+└── main.go
+```
+
 ### Key Components
 
 - **`CreateAttestation.tsx`**: Handles the creation of attestations for researchers. Auto-generates unique researcher IDs and timestamps.
