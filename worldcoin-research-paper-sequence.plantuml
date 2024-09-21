@@ -1,0 +1,27 @@
+@startuml
+actor User
+participant "User Device" as Device
+participant "Worldcoin Protocol" as Worldcoin
+participant "User Wallet" as Wallet
+participant dApp
+participant "Off-Chain Verification Service" as Verification
+participant "Research Paper Storage (IPFS)" as IPFS
+
+User -> Device: Initiate registration
+Device -> Worldcoin: 1. Register Worldcoin ID (Iris Scan)
+Worldcoin -> Wallet: 2. Generate World ID and link to Wallet
+Wallet -> Wallet: 3. Generate Self-Verifying Proof from World ID
+User -> dApp: Attempt to access
+dApp -> Wallet: 4. Request Proof for Authentication
+Wallet -> dApp: Send Proof
+dApp -> Verification: 5. Verify Proof
+Verification -> Worldcoin: Check against Worldcoin Protocol
+Worldcoin -> Verification: Confirm validity
+Verification -> dApp: Proof verified
+dApp -> dApp: 6. Attest Data with Schema
+note over dApp: Use Identity, Signature, Credential Schemas
+dApp -> IPFS: 7. Store Research Paper
+note over IPFS: Store metadata (e.g., schema details)
+dApp -> Device: 8. Grant User Access
+Device -> User: Access granted to dApp
+@enduml
