@@ -29,7 +29,7 @@ async function createResearcherAttestation(data: {
   worldIDProof: string;
 }) {
   // Replace with your actual schemaId after registering the schema
-  const schemaId = "0x123"; // <-- Update this with the actual schemaId
+  const schemaId = "0x6d"; // <-- Update this with the actual schemaId
 
   // Prepare data to attest
   const dataToAttest = {
@@ -91,7 +91,8 @@ async function queryAttestations(publicKey: string, schemaId: string) {
       mode: "onchain",
       schemaId: `onchain_evm_10200_${schemaId}`, // Adjust chain ID and schemaId accordingly
       attester: account.address,
-      indexingValue: publicKey.toLowerCase(),
+      //   indexingValue: publicKey.toLowerCase(),
+      indexingValue: "0x1234567890abcdef1234567890abcdef12345678",
     },
   });
 
@@ -155,7 +156,7 @@ function findAttestation(researcherID: string, attestations: any[], schemaData: 
   return undefined;
 }
 
-const SignAttestation = () => {
+const CreateIdAttestation = () => {
   const [researcherID, setResearcherID] = useState("");
   const [fullName, setFullName] = useState("");
   const [affiliation, setAffiliation] = useState("");
@@ -166,9 +167,11 @@ const SignAttestation = () => {
   const [attestations, setAttestations] = useState<any[]>([]);
   const [queryResult, setQueryResult] = useState<any>(null);
   const [showAttestations, setShowAttestations] = useState(false);
+  const [searchResearcherID, setSearchResearcherID] = useState(""); // State for search input
+  const [foundAttestation, setFoundAttestation] = useState<any>(null); // State to hold found attestation
 
   // Replace with your actual schemaId after registering the schema
-  const schemaId = "0x123"; // <-- Update this with the actual schemaId
+  const schemaId = "0x6d"; // <-- Update this with the actual schemaId
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,14 +213,16 @@ const SignAttestation = () => {
     }
   };
 
-  const handleFindAttestation = async () => {
+  const handleFindAttestation = async (e: React.FormEvent) => {
+    e.preventDefault();
     // Retrieve the schema to get schema data fields
     const schema = await client.getSchema(schemaId);
     console.log("Schema data fields:", JSON.stringify(schema.data, null, 2));
 
-    const result = findAttestation(researcherID, attestations, schema.data);
+    const result = findAttestation(searchResearcherID, attestations, schema.data);
     if (result) {
       console.log("Found attestation:", result);
+      setFoundAttestation(result);
       alert(`Found attestation: ${JSON.stringify(result.parsedData)}`);
     } else {
       console.log("No attestation found for the given Researcher ID.");
@@ -227,6 +232,10 @@ const SignAttestation = () => {
 
   const AttestationCard = ({ attestation }: { attestation: any }) => {
     const data = attestation.data;
+
+    // Ensure researchAreas is an array before calling join
+    const researchAreasDisplay = Array.isArray(data.researchAreas) ? data.researchAreas.join(", ") : "N/A";
+
     return (
       <div className="attestation-card">
         <h3>Attestation</h3>
@@ -243,7 +252,7 @@ const SignAttestation = () => {
           <strong>Email:</strong> {data.email}
         </p>
         <p>
-          <strong>Research Areas:</strong> {data.researchAreas.join(", ")}
+          <strong>Research Areas:</strong> {researchAreasDisplay}
         </p>
         <p>
           <strong>Public Key:</strong> {data.publicKey}
@@ -299,9 +308,20 @@ const SignAttestation = () => {
       <div>
         <button onClick={handleQueryAttestations}>Query Attestations</button>
       </div>
-      <div>
-        <button onClick={handleFindAttestation}>Find Attestation</button>
-      </div>
+
+      {/* Form to search for a specific attestation by Researcher ID */}
+      <form onSubmit={handleFindAttestation}>
+        <div>
+          <label htmlFor="searchResearcherID">Search Researcher ID:</label>
+          <input
+            type="text"
+            id="searchResearcherID"
+            value={searchResearcherID}
+            onChange={e => setSearchResearcherID(e.target.value)}
+          />
+        </div>
+        <button type="submit">Find Attestation</button>
+      </form>
 
       {queryResult && !queryResult.success && <p>{queryResult.message}</p>}
 
@@ -312,8 +332,15 @@ const SignAttestation = () => {
           ))}
         </div>
       )}
+
+      {foundAttestation && (
+        <div className="found-attestation">
+          <h3>Found Attestation</h3>
+          <AttestationCard attestation={foundAttestation.attestation} />
+        </div>
+      )}
     </div>
   );
 };
 
-export default SignAttestation;
+export default CreateIdAttestation;
