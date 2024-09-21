@@ -20,12 +20,15 @@ func NewWorldCoinAdaptor(client resty.Client) outbound.WorldCoinAdaptor {
 	}
 }
 
-func (a *WorldCoinAdaptor) VerifyProof(ctx context.Context, proofModel model.WorldCoinAdaptorRequestVerify) (*model.WorldCoinAdaptorResponse, error) {
-	appID := "{app_id}" // Replace with the actual app ID
-	url := fmt.Sprintf("http://your-api-url/api/v2/verify/%s", appID)
+func (a *WorldCoinAdaptor) VerifyProof(ctx context.Context, proofModel model.WorldCoinAdaptorRequest) (*model.WorldCoinAdaptorResponse, error) {
+	url := fmt.Sprintf("http://your-api-url/api/v2//%s", proofModel.AppID)
 
-	payload := &model.WorldCoinAdaptorRequestVerify{
-		AppID: proofModel.AppID,
+	payload := &model.WorldCoinAdaptorRequest{
+		NullifierHash:     proofModel.NullifierHash,
+		MerkleRoot:        proofModel.MerkleRoot,
+		VerificationLevel: proofModel.VerificationLevel,
+		Action:            proofModel.Action,
+		SignalHash:        proofModel.SignalHash,
 	}
 	result := model.WorldCoinAdaptorResponse{}
 	resp, err := a.client.R().

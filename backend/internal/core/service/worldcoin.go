@@ -19,8 +19,8 @@ func NewWorldCoinService(worldCoinAdaptor outbound.WorldCoinAdaptor) inbound.Wor
 	}
 }
 
-func (s *worldCoinService) VerifyProof(ctx context.Context, req *model.WorldCoinHandlerRequestVerfiy) (*model.WorldCoinHandlerResponse, error) {
-	res, err := s.worldCoinAdaptor.VerifyProof(ctx, model2.WorldCoinAdaptorRequestVerify(*req))
+func (s *worldCoinService) VerifyProof(ctx context.Context, req *model.WorldCoinHandlerRequest) (*model.WorldCoinHandlerResponse, error) {
+	res, err := s.worldCoinAdaptor.VerifyProof(ctx, model2.WorldCoinAdaptorRequest(*req))
 	if err != nil {
 		return nil, err
 	}
