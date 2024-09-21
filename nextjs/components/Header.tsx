@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useCallback, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import WorldId from "./WorldId";
-import { Bars3Icon, BugAntIcon } from "@heroicons/react/24/outline";
-import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
+import { Bars3Icon, BugAntIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
 type HeaderMenuLink = {
@@ -15,7 +13,7 @@ type HeaderMenuLink = {
   icon?: React.ReactNode;
 };
 
-export const menuLinks: HeaderMenuLink[] = [
+const menuLinks: HeaderMenuLink[] = [
   {
     label: "Home",
     href: "/",
@@ -27,7 +25,7 @@ export const menuLinks: HeaderMenuLink[] = [
   },
 ];
 
-export const HeaderMenuLinks = () => {
+const HeaderMenuLinks = () => {
   const pathname = usePathname();
 
   return (
@@ -38,12 +36,11 @@ export const HeaderMenuLinks = () => {
           <li key={href}>
             <Link
               href={href}
-              passHref
               className={`${
-                isActive ? "bg-secondary shadow-md" : ""
-              } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
+                isActive ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-secondary"
+              } flex items-center px-4 py-2 rounded-md transition-colors duration-200 ease-in-out`}
             >
-              {icon}
+              {icon && <span className="mr-2">{icon}</span>}
               <span>{label}</span>
             </Link>
           </li>
@@ -53,10 +50,7 @@ export const HeaderMenuLinks = () => {
   );
 };
 
-/**
- * Site header
- */
-export const Header = () => {
+export function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   useOutsideClick(
@@ -65,48 +59,54 @@ export const Header = () => {
   );
 
   return (
-    <div className="sticky lg:static top-0 navbar bg-base-100 min-h-0 flex-shrink-0 justify-between z-20 shadow-md shadow-secondary px-0 sm:px-2">
-      <div className="navbar-start w-auto lg:w-1/2">
-        <div className="lg:hidden dropdown" ref={burgerMenuRef}>
-          <label
-            tabIndex={0}
-            className={`ml-1 btn btn-ghost ${isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"}`}
-            onClick={() => {
-              setIsDrawerOpen(prevIsOpenState => !prevIsOpenState);
-            }}
+    <header className="sticky top-0 z-30 w-full bg-gradient-to-br from-purple-500 to-indigo-600 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                Factify
+              </span>
+            </Link>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <WorldId />
+
+            <div className="md:hidden">
+              <button
+                className="text-foreground hover:text-primary transition-colors"
+                onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+              >
+                <span className="sr-only">Open main menu</span>
+                {isDrawerOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      <div
+        className={`md:hidden ${
+          isDrawerOpen ? "block" : "hidden"
+        } fixed inset-0 z-50 bg-background/80 backdrop-blur-sm`}
+      >
+        <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-background p-6 shadow-lg" ref={burgerMenuRef}>
+          <button
+            className="absolute top-5 right-5 text-foreground hover:text-primary transition-colors"
+            onClick={() => setIsDrawerOpen(false)}
           >
-            <Bars3Icon className="h-1/2" />
-          </label>
-          {isDrawerOpen && (
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-              onClick={() => {
-                setIsDrawerOpen(false);
-              }}
-            >
+            <span className="sr-only">Close menu</span>
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+          <nav className="mt-8">
+            <ul className="space-y-4">
               <HeaderMenuLinks />
             </ul>
-          )}
+          </nav>
         </div>
-        <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
-          <div className="flex relative w-10 h-10">
-            <Image alt="SE2 logo" className="cursor-pointer" fill src="/logo.svg" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold leading-tight">Scaffold-ETH</span>
-            <span className="text-xs">Ethereum dev stack</span>
-          </div>
-        </Link>
-        <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
-          <HeaderMenuLinks />
-        </ul>
       </div>
-      <div className="navbar-end flex-grow mr-4">
-        {/* <RainbowKitCustomConnectButton />
-        <FaucetButton /> */}
-        <WorldId />
-      </div>
-    </div>
+    </header>
   );
-};
+}
