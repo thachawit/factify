@@ -6,15 +6,18 @@ import (
 	"github.com/thachawit/factify/internal/core/port/inbound"
 )
 
-func NewWorldCoinHandler() {
-
-}
-
-type WorldCoinHandler struct {
+type worldCoinHandler struct {
 	validate         *validator.Validate
 	worldCoinService inbound.WorldCoinInterface
 }
 
-func (h *WorldCoinHandler) VerifyProof(proofRequest model.WorldCoinHandlerRequest) (*model.WorldCoinHandlerResponse, error) {
+func NewWorldCoinHandler(validate validator.Validate, worldCoinService inbound.WorldCoinInterface) *worldCoinHandler {
+	return &worldCoinHandler{
+		validate:         &validate,
+		worldCoinService: worldCoinService,
+	}
+}
+
+func (h *worldCoinHandler) VerifyProof(proofRequest model.WorldCoinHandlerRequest) (*model.WorldCoinHandlerResponse, error) {
 	return &model.WorldCoinHandlerResponse{}, nil
 }

@@ -1,7 +1,11 @@
 package inbound
 
-import "github.com/thachawit/factify/internal/core/model"
+import (
+	"context"
+
+	"github.com/thachawit/factify/internal/core/model"
+)
 
 type WorldCoinInterface interface {
-	VerifyProof(proofRequest model.WorldCoinHandlerRequest) (*model.WorldCoinHandlerResponse, error)
+	VerifyProof(ctx context.Context, req *model.WorldCoinHandlerRequest) (*model.WorldCoinHandlerResponse, error)
 }
