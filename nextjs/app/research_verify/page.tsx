@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // app/[your-page]/page.tsx
 "use client";
 
@@ -5,6 +6,10 @@ import React from "react";
 import QueryResearchAttestation from "~~/components/QueryResearchAttestation";
 import CreateIdAttestation from "~~/components/createResearchAttestation";
 
+/* eslint-disable prettier/prettier */
+// app/[your-page]/page.tsx
+
+/* eslint-disable prettier/prettier */
 // app/[your-page]/page.tsx
 
 // app/[your-page]/page.tsx
@@ -27,7 +32,11 @@ import CreateIdAttestation from "~~/components/createResearchAttestation";
 
 // app/[your-page]/page.tsx
 
-// Optional: Add any other components, hooks, or libraries you need
+// app/[your-page]/page.tsx
+
+// app/[your-page]/page.tsx
+
+// eslint-disable-next-line prettier/prettier
 // import YourComponent from "@/components/YourComponent";
 
 const research_verify = () => {

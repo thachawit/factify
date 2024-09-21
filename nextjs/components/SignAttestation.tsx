@@ -215,7 +215,8 @@ const SignAttestation = () => {
     const schema = await client.getSchema(schemaId);
     console.log("Schema data fields:", JSON.stringify(schema.data, null, 2));
 
-    const result = findAttestation(researcherID, attestations, schema.data);
+    const schemaDataArray = Array.isArray(schema.data) ? schema.data : [];
+    const result = findAttestation(researcherID, attestations, schemaDataArray);
     if (result) {
       console.log("Found attestation:", result);
       alert(`Found attestation: ${JSON.stringify(result.parsedData)}`);

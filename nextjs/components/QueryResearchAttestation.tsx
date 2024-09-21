@@ -136,7 +136,7 @@ const QueryResearchAttestation = () => {
   const handleFindAttestation = async (e: React.FormEvent) => {
     e.preventDefault();
     const schema = await client.getSchema(schemaId);
-    const result = findAttestation(searchResearchID, attestations, schema.data);
+    const result = findAttestation(searchResearchID, attestations, Array.isArray(schema.data) ? schema.data : []);
     if (result) {
       setFoundAttestation(result);
       alert(`Found attestation: ${JSON.stringify(result.parsedData)}`);

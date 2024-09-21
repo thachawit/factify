@@ -5,7 +5,7 @@ const AttestationCard = ({ attestation }: { attestation: any }) => {
 
   // Safely format researchAreas
   const researchAreasDisplay = Array.isArray(data.researchAreas)
-    ? data.researchAreas.map(area => area.replace(/"/g, "")).join(", ")
+    ? data.researchAreas.map((area: string) => area.replace(/"/g, "")).join(", ")
     : "N/A";
 
   return (

@@ -1,15 +1,12 @@
 "use client";
 
 import type { NextPage } from "next";
-import { useAccount } from "wagmi";
 import CreateAttestation from "~~/components/CreateAttestation";
 import QueryAttestation from "~~/components/QueryAttestation";
 
 /* --- Begin nextjs/app/page.tsx --- */
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-indigo-600 p-4">
       <h1 className="text-4xl font-bold text-white mb-8">Attestation Dashboard</h1>

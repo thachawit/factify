@@ -1,23 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { IDKitWidget, ISuccessResult, VerificationLevel, VerificationResponse } from "@worldcoin/idkit";
-import { Globe } from "lucide-react";
+import { IDKitWidget, ISuccessResult, VerificationLevel } from "@worldcoin/idkit";
 
-const WorldId = ({ onVerifySuccess }) => {
-  const [isVerified, setIsVerified] = useState(false);
+interface WorldIdProps {
+  onVerifySuccess: (result: ISuccessResult) => void;
+}
 
+const WorldId = ({ onVerifySuccess }: WorldIdProps) => {
   // Callback when the modal is closed after successful verification
   const onSuccess = (result: ISuccessResult) => {
     console.log("Verification successful:", result);
-    setIsVerified(true);
     onVerifySuccess(result); // Pass the result to the parent component
   };
 
   // Callback when the proof is received
-  const handleVerify = async (response: VerificationResponse) => {
+  const handleVerify = async (response: any): Promise<void> => {
     try {
-      const res = await fetch("https://627c-223-255-254-102.ngrok-free.app/verify-proof", {
+      const res = await fetch("https://1f1d-223-255-254-102.ngrok-free.app/verify-proof", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,14 +28,11 @@ const WorldId = ({ onVerifySuccess }) => {
 
       if (data.success) {
         console.log("Backend verification successful");
-        return true;
       } else {
         console.error("Backend verification failed");
-        return false;
       }
     } catch (error) {
       console.error("Error verifying on backend:", error);
-      return false;
     }
   };
 

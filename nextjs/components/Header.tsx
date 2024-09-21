@@ -76,7 +76,11 @@ export function Header() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <WorldId />
+            <WorldId
+              onVerifySuccess={() => {
+                /* handle success */
+              }}
+            />
 
             <div className="md:hidden">
               <button

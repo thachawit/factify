@@ -13,7 +13,7 @@ const AuthBeforeCreate = ({ onSubmit }: AuthBeforeCreateProps) => {
   const [isVerified, setIsVerified] = useState(false); // State to track verification
 
   // Callback to handle verification success from World ID
-  const handleVerificationSuccess = (result: { proof: string }) => {
+  const handleVerificationSuccess = () => {
     setIsVerified(true); // Set verification state to true when World ID proof is successful
   };
 
