@@ -10,6 +10,9 @@ type WorldCoinAdaptorRequest struct {
 	SignalHash        string
 }
 
+type WorldCoinAdaptorRequestVerify struct {
+	AppID string
+}
 type WorldCoinAdaptorResponse struct {
 	VerifyProof   bool
 	Action        string

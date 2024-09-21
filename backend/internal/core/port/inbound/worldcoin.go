@@ -7,5 +7,5 @@ import (
 )
 
 type WorldCoinInterface interface {
-	VerifyProof(ctx context.Context, req *model.WorldCoinHandlerRequest) (*model.WorldCoinHandlerResponse, error)
+	VerifyProof(ctx context.Context, req *model.WorldCoinHandlerRequestVerfiy) (*model.WorldCoinHandlerResponse, error)
 }

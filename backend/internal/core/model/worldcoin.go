@@ -10,6 +10,10 @@ type WorldCoinHandlerRequest struct {
 	SignalHash        string
 }
 
+type WorldCoinHandlerRequestVerfiy struct {
+	AppID string `json:"appID"`
+}
+
 type WorldCoinHandlerResponse struct {
 	VerifyProof   bool
 	Action        string

@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/thachawit/factify/internal/core/model"
 	"github.com/thachawit/factify/internal/core/port/inbound"
 )
 
@@ -21,5 +22,21 @@ func NewWorldCoinHandler(validate *validator.Validate, worldCoinService inbound.
 }
 
 func (h *worldCoinHandler) VerifyProof(c echo.Context) error {
-	return c.JSON(http.StatusOK, "")
+	var req model.WorldCoinHandlerRequestVerfiy
+
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadGateway, "Cannot bind struct")
+
+	}
+
+	if err := h.validate.Struct(&req); err != nil {
+		return c.JSON(http.StatusOK, "the type of field is not correct")
+	}
+
+	verifyResult, err := h.worldCoinService.VerifyProof(c.Request().Context(), &req)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, verifyResult)
 }
