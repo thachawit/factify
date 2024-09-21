@@ -22,7 +22,7 @@ func NewWorldCoinHandler(validate *validator.Validate, worldCoinService inbound.
 }
 
 func (h *worldCoinHandler) VerifyProof(c echo.Context) error {
-	var req model.WorldCoinHandlerRequestVerfiy
+	var req model.WorldCoinHandlerRequest
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadGateway, "Cannot bind struct")
