@@ -1,0 +1,265 @@
+"use client";
+
+import { useState } from "react";
+import axios from "axios";
+import { AbiCoder, Contract, ethers, utils } from "ethers";
+import { JsonRpcProvider } from "ethers/providers";
+import { BigNumber } from "ethers/utils";
+import { decodeAbiParameters, isAddress } from "viem";
+
+// Replace with your actual private key (ensure it's kept secure)
+const privateKey = "0xc44f89924070f06206a4c1465e87ea1551111be5fd8d6405a1978bb519356520";
+
+// Set up the provider (use the appropriate RPC URL for your network)
+const provider = new JsonRpcProvider("https://erpc.chiado.staging.shutter.network");
+
+async function createNotaryAttestation(contractDetails: string, signer: string) {
+  let address = "0x98c75B19737a03b935A61826ed1B2a03094Eee59"; // Alice's address. Will need Alice's account to send the tx.
+  // const schemaData = ethers.utils.abiCoder.encode(["string", "address"], [contractDetails, signer]);
+  const schemaData = AbiCoder.encode(["string", "address"], [contractDetails, signer]);
+
+  // Standard setup for the contract
+  const provider = new ethers.providers.JsonRpcProvider(
+    // Get an RPC URL (such as an infura link) to connect to the network
+    getProviderUrl(84532),
+  );
+  // Get the contract address from the Address Book in docs.sign.global
+  const contract = new Contract(CONTRACT_ADDRESS(84532), ISPABI.abi, provider);
+  // Get the provider from the currently connected wallet
+  const library = new Web3Provider(await connector.getProvider());
+  // Create writable contract instance
+  const instance = contract.connect(library.getSigner() as any) as Contract;
+
+  // Send the attestation transaction
+  try {
+    await instance["attest((uint64,uint64,uint64,uint64,address,uint64,uint8,bool,bytes[],bytes),string,bytes,bytes)"](
+      {
+        schemaId: BigNumber.from("0x4e"), // The final number from our schema's ID.
+        linkedAttestationId: 0, // We are not linking an attestation.
+        attestTimestamp: 0, // Will be generated for us.
+        revokeTimestamp: 0, // Attestation is not revoked.
+        attester: address, // Alice's address.
+        validUntil: 0, // We are not setting an expiry date.
+        dataLocation: 0, // We are placing data on-chain.
+        revoked: false, // The attestation is not revoked.
+        recipients: [signer], // Bob is our recipient.
+        data: schemaData, // The encoded schema data.
+      },
+      signer.toLowerCase(), // Bob's lowercase address will be our indexing key.
+      "0x", // No delegate signature.
+      "0x00", // No extra data.
+    )
+      .then(
+        async (tx: any) =>
+          await tx.wait(1).then(res => {
+            console.log("success", res);
+            // You can find the attestation's ID using the following path:
+            // res.events[0].args.attestationId
+          }),
+      )
+      .catch((err: any) => {
+        console.log(err?.message ? err.message : err);
+      });
+  } catch (err: any) {
+    console.log(err?.message ? err.message : err);
+  }
+}
+
+async function makeAttestationRequest(endpoint: string, options: any) {
+  // const url = https://testnet-rpc.sign.global/api/${endpoint };
+  const res = await axios.request({
+    url,
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+    ...options,
+  });
+  if (res.status !== 200) {
+    throw new Error(JSON.stringify(res));
+  }
+  return res.data;
+}
+
+async function queryAttestations() {
+  const response = await makeAttestationRequest("index/attestations", {
+    method: "GET",
+    params: {
+      mode: "onchain",
+      schemaId: "onchain_evm_10200_0x34", // Update with your schema ID and network
+      attester: address,
+      indexingValue: address.toLowerCase(),
+    },
+  });
+
+  if (!response.success) {
+    return {
+      success: false,
+      message: response?.message ?? "Attestation query failed.",
+    };
+  }
+
+  if (response.data?.total === 0) {
+    return {
+      success: false,
+      message: "No attestation for this address found.",
+    };
+  }
+
+  return {
+    success: true,
+    attestations: response.data.rows,
+  };
+}
+
+function findAttestation(message: string, attestations: any[]) {
+  for (const att of attestations) {
+    if (!att.data) continue;
+
+    let parsedData: any = {};
+
+    if (att.mode === "onchain") {
+      try {
+        // Adjusted parsing logic
+        const schemaComponents = att.schema.data.map((item: any) => ({
+          name: item.name,
+          type: item.type,
+        }));
+
+        const data = decodeAbiParameters(schemaComponents, att.data);
+        parsedData = {};
+        schemaComponents.forEach((component: any, index: number) => {
+          parsedData[component.name] = data[index];
+        });
+      } catch (error) {
+        console.error("Error decoding on-chain data:", error);
+        continue;
+      }
+    } else {
+      try {
+        parsedData = JSON.parse(att.data);
+      } catch (error) {
+        console.error("Error parsing off-chain data:", error);
+        continue;
+      }
+    }
+
+    if (parsedData?.contractDetails === message) {
+      return { parsedData, attestation: att };
+    }
+  }
+
+  return undefined;
+}
+
+const SignAttestation = () => {
+  const [contractDetails, setContractDetails] = useState("");
+  const [signerAddress, setSignerAddress] = useState("");
+  const [attestations, setAttestations] = useState<any[]>([]);
+  const [queryResult, setQueryResult] = useState<any>(null);
+  const [showAttestations, setShowAttestations] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Submitting contract details:", contractDetails);
+    console.log("Submitting signer address:", signerAddress);
+
+    if (!isAddress(signerAddress)) {
+      alert("Please enter a valid signer address.");
+      return;
+    }
+
+    try {
+      await createNotaryAttestation(contractDetails, signerAddress);
+    } catch (error) {
+      console.error("Error creating attestation:", error);
+      alert("Error creating attestation. Check console for details.");
+    }
+  };
+
+  const handleQueryAttestations = async () => {
+    const result = await queryAttestations();
+    setQueryResult(result);
+    if (result.success) {
+      setAttestations(result.attestations);
+      setShowAttestations(true);
+      console.log(result.attestations);
+    } else {
+      alert(result.message);
+    }
+  };
+
+  const handleFindAttestation = () => {
+    const result = findAttestation(contractDetails, attestations);
+    if (result) {
+      console.log("Found attestation:", result);
+      // alert(Found attestation: ${JSON.stringify(result.parsedData)});
+    } else {
+      console.log("No attestation found for the given contract details.");
+      alert("No attestation found for the given contract details.");
+    }
+  };
+
+  const AttestationCard = ({ attestation }: { attestation: any }) => {
+    return (
+      <div className="attestation-card">
+        <h3>Attestation</h3>
+        <p>
+          <strong>Contract Details:</strong> {attestation.data.contractDetails}
+        </p>
+        <p>
+          <strong>Signer:</strong> {attestation.data.signer}
+        </p>
+        <p>
+          <strong>Schema ID:</strong> {attestation.schemaId}
+        </p>
+        <p>
+          <strong>Indexing Value:</strong> {attestation.indexingValue}
+        </p>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="contractDetails">Contract Details:</label>
+          <input
+            type="text"
+            id="contractDetails"
+            value={contractDetails}
+            onChange={e => setContractDetails(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="signerAddress">Signer Address:</label>
+          <input
+            type="text"
+            id="signerAddress"
+            value={signerAddress}
+            onChange={e => setSignerAddress(e.target.value)}
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+      <div>
+        <button onClick={handleQueryAttestations}>Query Attestations</button>
+      </div>
+      <div>
+        <button onClick={handleFindAttestation}>Find Attestation</button>
+      </div>
+
+      {queryResult && !queryResult.success && <p>{queryResult.message}</p>}
+
+      {showAttestations && (
+        <div className="attestations-list">
+          {attestations.map((attestation, index) => (
+            <AttestationCard key={index} attestation={attestation} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SignAttestation;
